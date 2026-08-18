@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LPG Gas Detector</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f2f4f7;
+      text-align: center;
+    }
+
+    .header {
+      background: #222;
+      color: white;
+      padding: 25px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    #status {
+      font-size: 30px;
+      font-weight: bold;
+      margin: 20px;
+    }
+
+    .safe {
+      color: green;
+    }
+
+    .danger {
+      color: red;
+    }
+
+    .gas {
+      font-size: 40px;
+      font-weight: bold;
+      margin: 20px;
+    }
+
+    .info {
+      font-size: 18px;
+      margin: 12px;
+    }
+
+    button {
+      width: 90%;
+      padding: 15px;
+      margin: 10px;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .sms {
+      background: #2196F3;
+      color: white;
+    }
+
+    .call {
+      background: #4CAF50;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>🔥 LPG GAS DETECTOR</h1>
+    <p>Smart Gas Safety System</p>
+  </div>
+
+  <div class="container">
+
+    <div class="card">
+
+      <div id="status" class="safe">
+        🟢 SAFE
+      </div>
+
+      <div class="gas">
+        Gas Level: <span id="gasValue">39</span>
+      </div>
+
+      <div class="info">
+        🔊 Buzzer: <b id="buzzer">OFF</b>
+      </div>
+
+      <div class="info">
+        🔴 Red LED: <b id="red">OFF</b>
+      </div>
+
+      <div class="info">
+        🟢 Green LED: <b id="green">ON</b>
+      </div>
+
+      <div class="info">
+        ⚙️ Servo: <b id="servo">0°</b>
+      </div>
+
+      <button class="sms" onclick="sendSMS()">
+        💬 SEND SMS
+      </button>
+
+      <button class="call" onclick="makeCall()">
+        📞 CALL
+      </button>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    function sendSMS() {
+      alert("SMS system will be connected in the next step.");
+    }
+
+    function makeCall() {
+      alert("Call system will be connected in the next step.");
+    }
+
+  </script>
+
+</body>
+</html>
