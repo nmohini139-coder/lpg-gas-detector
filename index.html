@@ -121,7 +121,10 @@
       <button class="call" onclick="makeCall()">
         📞 CALL
       </button>
-
+<button class="call" onclick="connectArduino()" style="background-color: #28a745; color: white;">
+  🔌 CONNECT ARDUINO
+</button>
+<p id="statusText" style="font-size: 13px; color: #666; margin-top: 5px;">Status: Disconnected</p>
     </div>
 
   </div>
@@ -131,7 +134,64 @@
     function sendSMS() {
       alert("SMS system will be connected in the next step.");
     }
+let port;
+let reader;
+let isConnected = false;
 
+async function connectArduino() {
+  const status = document.getElementById("statusText");
+
+  if (!("serial" in navigator)) {
+    alert("Aapka browser Web Serial API support nahi karta! Google Chrome ya Edge use karein.");
+    return;
+  }
+
+  if (!isConnected) {
+    try {
+      port = await navigator.serial.requestPort();
+      await port.open({ baudRate: 9600 });
+      isConnected = true;
+      status.innerText = "Status: Connected via USB";
+      readSerialData();
+    } catch (err) {
+      status.innerText = "Status: Connection Failed / Cancelled";
+    }
+  } else {
+    if (reader) await reader.cancel();
+    if (port) await port.close();
+    isConnected = false;
+    status.innerText = "Status: Disconnected";
+  }
+}
+
+async function readSerialData() {
+  const decoder = new TextDecoderStream();
+  const inputDone = port.readable.pipeTo(decoder.writable);
+  const inputStream = decoder.readable;
+  reader = inputStream.getReader();
+  let buffer = "";
+
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) { reader.releaseLock(); break; }
+      if (value) {
+        buffer += value;
+        let lines = buffer.split("\n");
+        buffer = lines.pop();
+        for (let line of lines) {
+          let trimmedVal = line.trim();
+          if (trimmedVal !== "" && !isNaN(trimmedVal)) {
+            let gasElem = document.getElementById("gasValue");
+            if (gasElem) gasElem.innerText = trimmedVal;
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Read Error:", err);
+  }
+}
     function makeCall() {
       alert("Call system will be connected in the next step.");
     }
