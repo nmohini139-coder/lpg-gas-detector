@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="hi">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,148 +12,205 @@
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #eef2f7, #dce6f2);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #333;
       text-align: center;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     /* HEADER */
     .header {
-      background: #222;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
       color: white;
       padding: 25px;
-      animation: slideDown 0.8s ease;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      animation: slideDown 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .header h1 {
       margin: 0;
-      animation: titleGlow 2s infinite;
+      font-size: 28px;
+      letter-spacing: 1px;
+      animation: titleGlow 3s infinite alternate;
+    }
+
+    .header p {
+      margin: 5px 0 0;
+      opacity: 0.8;
+      font-size: 14px;
     }
 
     /* MAIN CONTAINER */
     .container {
-      max-width: 500px;
-      margin: 30px auto;
-      padding: 20px;
-      animation: fadeIn 1s ease;
+      max-width: 450px;
+      width: 90%;
+      margin: 20px auto;
+      padding: 10px;
+      animation: fadeInUp 0.9s ease-out;
     }
 
     /* CARD */
     .card {
-      background: white;
+      background: rgba(255, 255, 255, 0.95);
       padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      transition: 0.3s;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
     }
 
     .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
 
     /* STATUS */
     #status {
-      font-size: 30px;
-      font-weight: bold;
-      margin: 20px;
-      transition: 0.3s;
+      font-size: 26px;
+      font-weight: 800;
+      margin: 15px 0;
+      padding: 10px;
+      border-radius: 10px;
+      transition: all 0.4s ease;
     }
 
     .safe {
-      color: green;
-      animation: safeGlow 2s infinite;
+      color: #2e7d32;
+      background: rgba(76, 175, 80, 0.1);
+      animation: safeGlow 2.5s infinite;
     }
 
     .danger {
-      color: red;
-      animation: dangerBlink 0.6s infinite;
+      color: #d32f2f;
+      background: rgba(244, 67, 54, 0.15);
+      animation: dangerBlink 0.5s infinite alternate;
     }
 
     /* GAS VALUE */
     .gas {
-      font-size: 32px;
-      font-weight: bold;
-      margin: 20px;
-      transition: 0.3s;
+      font-size: 24px;
+      font-weight: 700;
+      color: #444;
+      margin: 15px 0;
     }
 
     #gasValue {
       display: inline-block;
-      animation: numberPulse 1.5s infinite;
+      font-size: 36px;
+      color: #111;
+      font-weight: 900;
+      animation: numberPulse 2s infinite ease-in-out;
     }
 
     /* GAS BAR */
     .gasBarContainer {
-      width: 90%;
-      height: 25px;
-      background: #ddd;
+      width: 100%;
+      height: 22px;
+      background: #e0e0e0;
       border-radius: 20px;
-      margin: 20px auto;
+      margin: 20px 0;
       overflow: hidden;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+      padding: 3px;
     }
 
     #gasBar {
       height: 100%;
-      width: 10%;
-      background: green;
-      border-radius: 20px;
-      transition: width 0.5s ease, background 0.5s ease;
+      width: 0%;
+      background: linear-gradient(90deg, #4caf50, #81c784);
+      border-radius: 15px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s ease;
+      box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
     }
 
-    /* INFORMATION */
+    /* INFORMATION GRID */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
     .info {
-      font-size: 18px;
-      margin: 12px;
-      padding: 10px;
-      background: #f7f7f7;
-      border-radius: 8px;
-      transition: 0.3s;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px 8px;
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 12px;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .info:hover {
-      transform: scale(1.03);
-      background: #eeeeee;
+      transform: translateY(-3px) scale(1.02);
+      background: #ffffff;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.08);
+    }
+
+    .info b {
+      display: inline-block;
+      transition: transform 0.2s ease;
     }
 
     /* BUTTONS */
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
     button {
-      width: 90%;
-      padding: 15px;
-      margin: 10px;
+      width: 100%;
+      padding: 14px;
       border: none;
-      border-radius: 10px;
-      font-size: 18px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s ease;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
     }
 
     button:active {
-      transform: scale(0.95);
+      transform: translateY(1px) scale(0.98);
     }
 
     .sms {
-      background: #2196F3;
+      background: linear-gradient(135deg, #2196F3, #1e88e5);
       color: white;
     }
 
     .call {
-      background: #4CAF50;
+      background: linear-gradient(135deg, #4CAF50, #43a047);
       color: white;
     }
 
-    /* ANIMATIONS */
+    .connect-btn {
+      background: linear-gradient(135deg, #ff9800, #fb8c00);
+      color: white;
+    }
 
-    @keyframes fadeIn {
+    /* ANIMATIONS DEFINITIONS */
+
+    @keyframes fadeInUp {
       from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(40px);
       }
       to {
         opacity: 1;
@@ -171,33 +228,31 @@
     }
 
     @keyframes titleGlow {
-      0%, 100% {
-        text-shadow: 0 0 5px white;
+      0% {
+        text-shadow: 0 0 5px rgba(255,255,255,0.2);
       }
-      50% {
-        text-shadow: 0 0 20px orange;
+      100% {
+        text-shadow: 0 0 18px rgba(255, 152, 0, 0.8);
       }
     }
 
     @keyframes safeGlow {
       0%, 100% {
-        transform: scale(1);
-        text-shadow: 0 0 5px green;
+        box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
       }
       50% {
-        transform: scale(1.05);
-        text-shadow: 0 0 20px green;
+        box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
       }
     }
 
     @keyframes dangerBlink {
-      0%, 100% {
+      0% {
         opacity: 1;
         transform: scale(1);
       }
-      50% {
-        opacity: 0.3;
-        transform: scale(1.08);
+      100% {
+        opacity: 0.8;
+        transform: scale(1.02);
       }
     }
 
@@ -206,21 +261,22 @@
         transform: scale(1);
       }
       50% {
-        transform: scale(1.08);
+        transform: scale(1.06);
       }
     }
 
-    /* DANGER CARD */
+    /* DANGER CARD SHAKE & GLOW */
     .dangerCard {
-      animation: dangerCardAnimation 0.7s infinite;
+      animation: dangerShakeGlow 0.6s infinite alternate !important;
+      border: 2px solid #ff1744;
     }
 
-    @keyframes dangerCardAnimation {
-      0%, 100% {
-        box-shadow: 0 4px 15px rgba(255,0,0,0.2);
+    @keyframes dangerShakeGlow {
+      0% {
+        box-shadow: 0 0 15px rgba(255, 23, 68, 0.4);
       }
-      50% {
-        box-shadow: 0 4px 30px rgba(255,0,0,0.8);
+      100% {
+        box-shadow: 0 0 35px rgba(255, 23, 68, 0.9);
       }
     }
   </style>
@@ -250,39 +306,39 @@
         <div id="gasBar"></div>
       </div>
 
-      <div class="info">
-        🔊 Buzzer: <b id="buzzer">OFF</b>
+      <div class="info-grid">
+        <div class="info">
+          🔊 Buzzer: <b id="buzzer">OFF</b>
+        </div>
+
+        <div class="info">
+          🔴 Red LED: <b id="red">OFF</b>
+        </div>
+
+        <div class="info">
+          🟢 Green LED: <b id="green">ON</b>
+        </div>
+
+        <div class="info">
+          ⚙️ Servo: <b id="servo">0°</b>
+        </div>
       </div>
 
-      <div class="info">
-        🔴 Red LED: <b id="red">OFF</b>
+      <div class="btn-group">
+        <button class="sms" onclick="sendSMS()">
+          💬 SEND SMS
+        </button>
+
+        <button class="call" onclick="makeCall()">
+          📞 CALL
+        </button>
+
+        <button class="connect-btn" onclick="connectArduino()">
+          🔌 CONNECT ARDUINO
+        </button>
       </div>
 
-      <div class="info">
-        🟢 Green LED: <b id="green">ON</b>
-      </div>
-
-      <div class="info">
-        ⚙️ Servo: <b id="servo">0°</b>
-      </div>
-
-      <button class="sms" onclick="sendSMS()">
-        💬 SEND SMS
-      </button>
-
-      <button class="call" onclick="makeCall()">
-        📞 CALL
-      </button>
-
-      <button
-        class="call"
-        onclick="connectArduino()"
-        style="background-color:#28a745;color:white;">
-        🔌 CONNECT ARDUINO
-      </button>
-
-      <p id="statusText"
-         style="font-size:13px;color:#666;margin-top:5px;">
+      <p id="statusText" style="font-size:13px; color:#666; margin-top:15px; font-weight: 500;">
         Status: Disconnected
       </p>
 
@@ -290,285 +346,133 @@
 
   </div>
 
-
   <script>
-
     /* SMS */
     function sendSMS() {
       alert("SMS system will be connected in the next step.");
     }
-
 
     /* CALL */
     function makeCall() {
       alert("Call system will be connected in the next step.");
     }
 
-
     /* ARDUINO SERIAL */
-
     let port;
     let reader;
     let isConnected = false;
 
-
     async function connectArduino() {
-
       const status = document.getElementById("statusText");
 
       if (!("serial" in navigator)) {
-
-        alert(
-          "Aapka browser Web Serial API support nahi karta! Google Chrome ya Edge use karein."
-        );
-
+        alert("Aapka browser Web Serial API support nahi karta! Google Chrome ya Edge use karein.");
         return;
       }
 
-
       if (!isConnected) {
-
         try {
-
           port = await navigator.serial.requestPort();
-
-          await port.open({
-            baudRate: 9600
-          });
-
+          await port.open({ baudRate: 9600 });
           isConnected = true;
-
-          status.innerText = "Status: Connected via USB";
-
+          status.innerText = "Status: Connected via USB 🟢";
+          status.style.color = "#2e7d32";
           readSerialData();
-
+        } catch (err) {
+          status.innerText = "Status: Connection Failed / Cancelled 🔴";
+          status.style.color = "#d32f2f";
         }
-
-        catch (err) {
-
-          status.innerText =
-            "Status: Connection Failed / Cancelled";
-
-        }
-
-      }
-
-      else {
-
-        if (reader)
-          await reader.cancel();
-
-        if (port)
-          await port.close();
-
+      } else {
+        if (reader) await reader.cancel();
+        if (port) await port.close();
         isConnected = false;
-
-        status.innerText =
-          "Status: Disconnected";
+        status.innerText = "Status: Disconnected ⚪";
+        status.style.color = "#666";
       }
     }
 
-
     /* READ ARDUINO */
-
     async function readSerialData() {
-
       const decoder = new TextDecoderStream();
-
-      const inputDone =
-        port.readable.pipeTo(decoder.writable);
-
-      const inputStream =
-        decoder.readable;
-
-      reader =
-        inputStream.getReader();
-
+      const inputDone = port.readable.pipeTo(decoder.writable);
+      const inputStream = decoder.readable;
+      reader = inputStream.getReader();
       let buffer = "";
 
-
       try {
-
         while (true) {
-
-          const { value, done } =
-            await reader.read();
-
+          const { value, done } = await reader.read();
           if (done) {
-
             reader.releaseLock();
-
             break;
           }
 
-
           if (value) {
-
             buffer += value;
-
-            let lines =
-              buffer.split("\n");
-
-            buffer =
-              lines.pop();
-
+            let lines = buffer.split("\n");
+            buffer = lines.pop();
 
             for (let line of lines) {
-
-              let trimmedVal =
-                line.trim();
-
-
-              if (
-                trimmedVal !== "" &&
-                !isNaN(trimmedVal)
-              ) {
-
-                updateGas(
-                  Number(trimmedVal)
-                );
-
+              let trimmedVal = line.trim();
+              if (trimmedVal !== "" && !isNaN(trimmedVal)) {
+                updateGas(Number(trimmedVal));
               }
             }
           }
         }
-
-      }
-
-      catch (err) {
-
-        console.error(
-          "Read Error:",
-          err
-        );
+      } catch (err) {
+        console.error("Read Error:", err);
       }
     }
 
-
-    /* GAS ANIMATION */
-
+    /* GAS ANIMATION & STATUS UPDATE */
     function updateGas(value) {
-
-      const gasValue =
-        document.getElementById("gasValue");
-
-      const gasBar =
-        document.getElementById("gasBar");
-
-      const status =
-        document.getElementById("status");
-
-      const card =
-        document.getElementById("mainCard");
-
+      const gasValue = document.getElementById("gasValue");
+      const gasBar = document.getElementById("gasBar");
+      const status = document.getElementById("status");
+      const card = document.getElementById("mainCard");
 
       gasValue.innerText = value;
 
+      // Calculate Percentage (Max sensor value: 1023)
+      let percentage = (value / 1023) * 100;
+      if (percentage > 100) percentage = 100;
 
-      /*
-        Convert sensor value to
-        percentage.
+      gasBar.style.width = percentage + "%";
 
-        Maximum = 1023
-      */
-
-      let percentage =
-        (value / 1023) * 100;
-
-
-      if (percentage > 100)
-        percentage = 100;
-
-
-      gasBar.style.width =
-        percentage + "%";
-
-
-      /* GAS LEVEL */
-
+      /* GAS LEVEL CHECK */
       if (value >= 300) {
+        /* DANGER STATUS */
+        gasBar.style.background = "linear-gradient(90deg, #f44336, #e53935)";
+        gasBar.style.boxShadow = "0 0 12px rgba(244, 67, 54, 0.8)";
+        
+        status.innerHTML = "🚨 LPG GAS DETECTED!";
+        status.className = "danger";
+        card.classList.add("dangerCard");
 
-        /* DANGER */
+        document.getElementById("buzzer").innerText = "ON";
+        document.getElementById("red").innerText = "ON";
+        document.getElementById("green").innerText = "OFF";
+        document.getElementById("servo").innerText = "180°";
 
-        gasBar.style.background =
-          "red";
+      } else {
+        /* SAFE STATUS */
+        gasBar.style.background = "linear-gradient(90deg, #4caf50, #81c784)";
+        gasBar.style.boxShadow = "0 0 10px rgba(76, 175, 80, 0.5)";
 
-        status.innerHTML =
-          "🔴 LPG GAS DETECTED!";
+        status.innerHTML = "🟢 SAFE";
+        status.className = "safe";
+        card.classList.remove("dangerCard");
 
-        status.className =
-          "danger";
-
-        card.classList.add(
-          "dangerCard"
-        );
-
-
-        document.getElementById(
-          "buzzer"
-        ).innerText = "ON";
-
-
-        document.getElementById(
-          "red"
-        ).innerText = "ON";
-
-
-        document.getElementById(
-          "green"
-        ).innerText = "OFF";
-
-
-        document.getElementById(
-          "servo"
-        ).innerText = "180°";
-
-      }
-
-      else {
-
-        /* SAFE */
-
-        gasBar.style.background =
-          "green";
-
-        status.innerHTML =
-          "🟢 SAFE";
-
-        status.className =
-          "safe";
-
-        card.classList.remove(
-          "dangerCard"
-        );
-
-
-        document.getElementById(
-          "buzzer"
-        ).innerText = "OFF";
-
-
-        document.getElementById(
-          "red"
-        ).innerText = "OFF";
-
-
-        document.getElementById(
-          "green"
-        ).innerText = "ON";
-
-
-        document.getElementById(
-          "servo"
-        ).innerText = "0°";
+        document.getElementById("buzzer").innerText = "OFF";
+        document.getElementById("red").innerText = "OFF";
+        document.getElementById("green").innerText = "ON";
+        document.getElementById("servo").innerText = "0°";
       }
     }
 
-
-    /* START WITH CURRENT VALUE */
-
+    /* START WITH INITIAL VALUE */
     updateGas(39);
-
   </script>
 
 </body>
