@@ -515,5 +515,88 @@
     updateGas(39);
   </script>
 
-</body>
+<!-- Connect Button -->
+<button id="connectBtn" onclick="connectArduino()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
+  Connect Arduino
+</button>
+
+<!-- Live Status Display -->
+<h3 id="statusText">Status: Not Connected</h3>
+
+<script>
+  let port;
+  let reader;
+  let smsSent = false; // Bar-bar SMS jane se rokne ke liye
+
+  // Fast2SMS API Details
+  const apiKey = "YOUR_FAST2SMS_API_KEY"; // Yahan apni Fast2SMS API Key daalein
+  const mobileNumber = "YOUR_MOBILE_NUMBER"; // Yahan apna 10-digit mobile number daalein
+
+  // 1. Arduino ko Browser se connect karne ka function
+  async function connectArduino() {
+    try {
+      port = await navigator.serial.requestPort();
+      await port.open({ baudRate: 9600 });
+      document.getElementById("statusText").innerText = "Status: Connected to Arduino";
+      readSerialData();
+    } catch (err) {
+      console.error("Connection Failed:", err);
+      alert("Arduino Connect Nahi Hua: " + err.message);
+    }
+  }
+
+  // 2. Arduino se continuous data read karne ka function
+  async function readSerialData() {
+    const textDecoder = new TextDecoderStream();
+    const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+    reader = textDecoder.readable.getReader();
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) {
+        reader.releaseLock();
+        break;
+      }
+      if (value) {
+        let serialMessage = value.trim();
+        console.log("Arduino Output:", serialMessage);
+
+        // Agar Arduino se "GAS_DETECTED" ka message aata hai
+        if (serialMessage.includes("GAS_DETECTED")) {
+          document.getElementById("statusText").innerText = "Status: ⚠️ GAS LEAKAGE DETECTED!";
+          document.getElementById("statusText").style.color = "red";
+
+          // Pehli baar gas detect hone par SMS bhejega
+          if (!smsSent) {
+            sendSMSAlert();
+            smsSent = true; 
+          }
+        } else if (serialMessage.includes("GAS_NORMAL")) {
+          document.getElementById("statusText").innerText = "Status: ✅ Normal";
+          document.getElementById("statusText").style.color = "green";
+          smsSent = false; // Reset taaki agli baar dubara SMS ja sake
+        }
+      }
+    }
+  }
+
+  // 3. Fast2SMS API se SMS bhejne ka function
+  function sendSMSAlert() {
+    const url = `https://www.fast2sms.com/dev/bulkV2?authorization=${apiKey}&route=q&message=WARNING!%20LPG%20Gas%20Leakage%20Detected&flash=0&numbers=${mobileNumber}`;
+
+    fetch(url, { method: "GET" })
+      .then(response => response.json())
+      .then(data => {
+        console.log("SMS Status:", data);
+        if(data.return === true) {
+          alert("SMS Alert Sent Successfully!");
+        } else {
+          alert("SMS Send Failed: " + data.message);
+        }
+      })
+      .catch(error => {
+        console.error("Error sending SMS:", error);
+      });
+  }
+</script></body>
 </html>
