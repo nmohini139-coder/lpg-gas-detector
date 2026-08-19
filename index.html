@@ -473,7 +473,179 @@
 
     /* START WITH INITIAL VALUE */
     updateGas(39);
-  </script>
+  </<script>
+    /* SMS & CALL SYSTEM CONFIGURATION */
+    let smsSent = false;
+
+    // Twilio Details (Apni ID aur Number yahan daalein)
+    const TWILIO_ACCOUNT_SID = "YOUR_TWILIO_ACCOUNT_SID";
+    const TWILIO_AUTH_TOKEN = "YOUR_TWILIO_AUTH_TOKEN";
+    const TWILIO_PHONE_NUMBER = "+1234567890"; 
+    const MY_PHONE_NUMBER = "+91XXXXXXXXXX"; 
+
+    /* AUTO SMS FUNCTION */
+    function triggerAutoSMS(gasValue) {
+      if (smsSent) return; // Bar-bar SMS bhejne se rokne ke liye
+
+      const messageBody = `🚨 ALERT! LPG Gas Leakage Detected! Current Gas Level: ${gasValue}`;
+
+      fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Basic ' + btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`)
+        },
+        body: new URLSearchParams({
+          'To': MY_PHONE_NUMBER,
+          'From': TWILIO_PHONE_NUMBER,
+          'Body': messageBody
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("SMS Sent Successfully:", data);
+        alert("🚨 EMERGENCY ALERT: SMS Sent to registered phone number!");
+        smsSent = true;
+      })
+      .catch(error => {
+        console.error("SMS Error:", error);
+      });
+    }
+
+    /* MANUAL SMS BUTTON */
+    function sendSMS() {
+      const currentGas = document.getElementById("gasValue").innerText;
+      triggerAutoSMS(currentGas);
+    }
+
+    /* CALL FUNCTION */
+    function makeCall() {
+      alert("📞 Emergency Call Initiated to Saved Number!");
+      window.location.href = `tel:${MY_PHONE_NUMBER}`;
+    }
+
+    /* ARDUINO SERIAL */
+    let port;
+    let reader;
+    let isConnected = false;
+
+    async function connectArduino() {
+      const status = document.getElementById("statusText");
+
+      if (!("serial" in navigator)) {
+        alert("Aapka browser Web Serial API support nahi karta! Google Chrome ya Edge use karein.");
+        return;
+      }
+
+      if (!isConnected) {
+        try {
+          port = await navigator.serial.requestPort();
+          await port.open({ baudRate: 9600 });
+          isConnected = true;
+          status.innerText = "Status: Connected via USB 🟢";
+          status.style.color = "#2e7d32";
+          readSerialData();
+        } catch (err) {
+          status.innerText = "Status: Connection Failed / Cancelled 🔴";
+          status.style.color = "#d32f2f";
+        }
+      } else {
+        if (reader) await reader.cancel();
+        if (port) await port.close();
+        isConnected = false;
+        status.innerText = "Status: Disconnected ⚪";
+        status.style.color = "#666";
+      }
+    }
+
+    /* READ ARDUINO DATA */
+    async function readSerialData() {
+      const decoder = new TextDecoderStream();
+      const inputDone = port.readable.pipeTo(decoder.writable);
+      const inputStream = decoder.readable;
+      reader = inputStream.getReader();
+      let buffer = "";
+
+      try {
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) {
+            reader.releaseLock();
+            break;
+          }
+
+          if (value) {
+            buffer += value;
+            let lines = buffer.split("\n");
+            buffer = lines.pop();
+
+            for (let line of lines) {
+              let trimmedVal = line.trim();
+              if (trimmedVal !== "" && !isNaN(trimmedVal)) {
+                updateGas(Number(trimmedVal));
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Read Error:", err);
+      }
+    }
+
+    /* GAS ANIMATION & AUTO SMS TRIGGER */
+    function updateGas(value) {
+      const gasValue = document.getElementById("gasValue");
+      const gasBar = document.getElementById("gasBar");
+      const status = document.getElementById("status");
+      const card = document.getElementById("mainCard");
+
+      gasValue.innerText = value;
+
+      let percentage = (value / 1023) * 100;
+      if (percentage > 100) percentage = 100;
+
+      gasBar.style.width = percentage + "%";
+
+      /* GAS LEVEL CHECK */
+      if (value >= 300) {
+        /* DANGER STATUS */
+        gasBar.style.background = "linear-gradient(90deg, #f44336, #e53935)";
+        gasBar.style.boxShadow = "0 0 12px rgba(244, 67, 54, 0.8)";
+        
+        status.innerHTML = "🚨 LPG GAS DETECTED!";
+        status.className = "danger";
+        card.classList.add("dangerCard");
+
+        document.getElementById("buzzer").innerText = "ON";
+        document.getElementById("red").innerText = "ON";
+        document.getElementById("green").innerText = "OFF";
+        document.getElementById("servo").innerText = "180°";
+
+        /* AUTO SMS BHEJEGA JAB GAS DETECT HOGA */
+        triggerAutoSMS(value);
+
+      } else {
+        /* SAFE STATUS */
+        gasBar.style.background = "linear-gradient(90deg, #4caf50, #81c784)";
+        gasBar.style.boxShadow = "0 0 10px rgba(76, 175, 80, 0.5)";
+
+        status.innerHTML = "🟢 SAFE";
+        status.className = "safe";
+        card.classList.remove("dangerCard");
+
+        document.getElementById("buzzer").innerText = "OFF";
+        document.getElementById("red").innerText = "OFF";
+        document.getElementById("green").innerText = "ON";
+        document.getElementById("servo").innerText = "0°";
+
+        /* SAFE HONE PAR RESET KAR DEGA */
+        smsSent = false;
+      }
+    }
+
+    /* INITIAL VALUE */
+    updateGas(39);
+  </script>>
 
 </body>
 </html>
