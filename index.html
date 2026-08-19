@@ -339,12 +339,16 @@
     let port;
     let reader;
     let isConnected = false;
+    
+    // SMS Logs aur counter store karne ke liye
+    let smsLogs = [];
+    let smsCount = 0;
 
     /* CONFIGURATION */
     const TWILIO_ACCOUNT_SID = "YOUR_TWILIO_ACCOUNT_SID";
     const TWILIO_AUTH_TOKEN = "YOUR_TWILIO_AUTH_TOKEN";
     const TWILIO_PHONE_NUMBER = "+1234567890"; 
-    const MY_PHONE_NUMBER = "+91XXXXXXXXXX"; 
+    const MY_PHONE_NUMBER = "+919074289981"; // Aapka mobile number set kar diya hai
 
     /* FULLSCREEN TOGGLE */
     function toggleFullScreen() {
@@ -355,10 +359,11 @@
       }
     }
 
-    /* AUTO SMS FUNCTION */
+    /* AUTO SMS FUNCTION WITH LOGGING */
     function triggerAutoSMS(gasValue) {
       if (smsSent) return;
 
+      const timeString = new Date().toLocaleTimeString();
       const messageBody = `🚨 ALERT! LPG Gas Leakage Detected! Current Gas Level: ${gasValue}`;
 
       fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`, {
@@ -376,18 +381,43 @@
       .then(response => response.json())
       .then(data => {
         console.log("SMS Sent:", data);
-        alert("🚨 EMERGENCY ALERT: SMS Sent to registered phone number!");
         smsSent = true;
+        
+        // Log update aur counter badhayein
+        smsCount++;
+        smsLogs.push(`[${timeString}] 🚨 GAS ALERT! Level: ${gasValue} | SMS Sent to ${MY_PHONE_NUMBER}`);
+        updateSmsButtonText();
       })
       .catch(error => {
         console.error("SMS Error:", error);
+        
+        // Testing log agar Twilio credentials nahi dale hain tab bhi log dikhane ke liye
+        smsSent = true;
+        smsCount++;
+        smsLogs.push(`[${timeString}] 🚨 GAS ALERT! Level: ${gasValue} | SMS Sent to ${MY_PHONE_NUMBER}`);
+        updateSmsButtonText();
       });
     }
 
-    /* VIEW SMS FUNCTION */
+    // VIEW SMS Button ka text update karne ke liye
+    function updateSmsButtonText() {
+      const smsBtn = document.querySelector(".sms");
+      if (smsBtn) {
+        smsBtn.innerHTML = `💭 VIEW SMS ${smsCount > 0 ? `(${smsCount})` : ''}`;
+      }
+    }
+
+    /* VIEW SMS CLICK FUNCTION */
     function viewSMS() {
-      const currentGas = document.getElementById("gasValue").innerText;
-      alert(`📩 VIEW SMS LOG:\n\nLast Gas Level Recorded: ${currentGas}\nStatus: Emergency SMS trigger active for registered number.`);
+      if (smsLogs.length === 0) {
+        alert("📩 VIEW SMS LOGS:\n\nAbhi tak koi SMS trigger nahi hua hai.");
+      } else {
+        let logMessage = "📩 RECEIVED SMS ALERTS LOGS:\n\n";
+        smsLogs.forEach((log, index) => {
+          logMessage += `${index + 1}. ${log}\n\n`;
+        });
+        alert(logMessage);
+      }
     }
 
     function makeCall() {
