@@ -277,7 +277,64 @@
   </style>
 </head>
 
-<body>
+<!-- Aapka purana HTML design yahan hoga -->
+
+    <!-- Ye script tag lagakar code paste karein -->
+    <script>
+      let port;
+      let reader;
+
+      async function connectSerial() {
+        if (!("serial" in navigator)) {
+          alert("Browser Web Serial support nahi karta! Chrome ya Edge browser use karein.");
+          return;
+        }
+
+        try {
+          port = await navigator.serial.requestPort();
+          await port.open({ baudRate: 9600 });
+
+          document.getElementById("status").innerText = "Connected";
+          document.getElementById("status").style.color = "#2ecc71";
+
+          readData();
+        } catch (err) {
+          alert("Connection Fail: " + err);
+        }
+      }
+
+      async function readData() {
+        const textDecoder = new TextDecoderStream();
+        const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+        reader = textDecoder.readable.getReader();
+
+        let buffer = "";
+
+        try {
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            
+            buffer += value;
+            let lines = buffer.split("\n");
+            buffer = lines.pop(); 
+
+            for (let line of lines) {
+              if (line.trim() !== "") {
+                document.getElementById("liveData").innerText = line.trim();
+              }
+            }
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          reader.releaseLock();
+        }
+      }
+    </script>
+
+</body>
+</html><body>
 
   <div class="header">
     <h1>🔥 LPG GAS DETECTOR</h1>
